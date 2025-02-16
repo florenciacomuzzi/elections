@@ -19,11 +19,39 @@ def read_csv_to_dict(file_path):
     return data_dict
 
 
-if __name__ == '__main__':
-    # Example usage
-    file_path = 'sample.csv'
-    data = read_csv_to_dict(file_path)
+def send_email(user, pwd, recipient, subject, body):
+    import smtplib
 
-    # Print the dictionary
-    for key, value in data.items():
-        print(f"{key}: {value}")
+    FROM = user
+    TO = recipient if isinstance(recipient, list) else [recipient]
+    SUBJECT = subject
+    TEXT = body
+
+    # Prepare actual message
+    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+    """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.ehlo()
+        server.starttls()
+        server.login(user, pwd)
+        server.sendmail(FROM, TO, message)
+        server.close()
+        print('successfully sent the mail')
+    except Exception as e:
+        print(e)
+        print("failed to send mail")
+
+
+if __name__ == '__main__':
+    send_email("", "", "", "t4st", "jhi")
+
+    #
+    # # Example usage
+    # file_path = 'sample.csv'
+    # data = read_csv_to_dict(file_path)
+    #
+    # amended = data
+    # # Print the dictionary
+    # for key, value in data.items():
+    #     print(f"{key}: {value}")
